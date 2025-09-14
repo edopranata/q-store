@@ -1,0 +1,75 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ model }};
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+interface {{ class }}
+{
+    /**
+     * Get all {{ pluralModel }}.
+     */
+    public function getAll(array $with = []): Collection;
+
+    /**
+     * Get paginated {{ pluralModel }}.
+     */
+    public function getPaginated(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator;
+
+    /**
+     * Find {{ model }} by ID.
+     */
+    public function findById(int $id, array $with = []): ?{{ model }};
+
+    /**
+     * Find {{ model }} by name.
+     */
+    public function findByName(string $name, array $with = []): ?{{ model }};
+
+    /**
+     * Create a new {{ model }}.
+     */
+    public function create(array $data): {{ model }};
+
+    /**
+     * Update an existing {{ model }}.
+     */
+    public function update({{ model }} ${{ camelModel }}, array $data): {{ model }};
+
+    /**
+     * Delete a {{ model }}.
+     */
+    public function delete({{ model }} ${{ camelModel }}): bool;
+
+    /**
+     * Get {{ pluralModel }} by status.
+     */
+    public function getByStatus(string $status, array $with = []): Collection;
+
+    /**
+     * Get active {{ pluralModel }}.
+     */
+    public function getActive{{ pluralModel }}(array $with = []): Collection;
+
+    /**
+     * Search {{ pluralModel }}.
+     */
+    public function search(string $query, array $with = [], int $perPage = 15): LengthAwarePaginator;
+
+    /**
+     * Check if {{ model }} name exists.
+     */
+    public function nameExists(string $name, ?int $excludeId = null): bool;
+    
+    /**
+     * Get {{ model }} statistics.
+     */
+    public function getStatistics(): array;
+
+    /**
+     * Check if {{ model }} has related records.
+     */
+    public function hasRelatedRecords(int ${{ camelModel }}Id): bool;
+}

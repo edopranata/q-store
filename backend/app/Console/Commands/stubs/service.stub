@@ -1,0 +1,158 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ model }};
+use App\Repositories\Contracts\{{ repositoryInterface }};
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
+
+class {{ class }}
+{
+    protected {{ repositoryInterface }} ${{ camelModel }}Repository;
+
+    public function __construct({{ repositoryInterface }} ${{ camelModel }}Repository)
+    {
+        $this->{{ camelModel }}Repository = ${{ camelModel }}Repository;
+    }
+
+    /**
+     * Get all {{ pluralModel }}.
+     */
+    public function getAll{{ pluralModel }}(array $with = []): Collection
+    {
+        return $this->{{ camelModel }}Repository->getAll($with);
+    }
+
+    /**
+     * Get paginated {{ pluralModel }} with filters.
+     */
+    public function getPaginated{{ pluralModel }}(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->{{ camelModel }}Repository->getPaginated($filters, $with, $perPage);
+    }
+
+    /**
+     * Get {{ model }} by ID.
+     */
+    public function get{{ model }}ById(int $id, array $with = []): ?{{ model }}
+    {
+        return $this->{{ camelModel }}Repository->findById($id, $with);
+    }
+
+    /**
+     * Get active {{ pluralModel }} for options.
+     */
+    public function getActive{{ pluralModel }}ForOptions(): Collection
+    {
+        return $this->{{ camelModel }}Repository->getActive{{ pluralModel }}()->map(function (${{ camelModel }}) {
+            return [
+                'id' => ${{ camelModel }}->id,
+                'name' => ${{ camelModel }}->name,
+                // Add other fields as needed
+            ];
+        });
+    }
+
+    /**
+     * Create a new {{ model }}.
+     */
+    public function create{{ model }}(array $data): {{ model }}
+    {
+        $this->validate{{ model }}Data($data);
+        
+        return $this->{{ camelModel }}Repository->create($data);
+    }
+
+    /**
+     * Update an existing {{ model }}.
+     */
+    public function update{{ model }}(int $id, array $data): {{ model }}
+    {
+        ${{ camelModel }} = $this->get{{ model }}ById($id);
+        
+        if (!${{ camelModel }}) {
+            throw new \Exception('{{ model }} not found');
+        }
+
+        $this->validate{{ model }}Data($data, $id);
+        
+        return $this->{{ camelModel }}Repository->update(${{ camelModel }}, $data);
+    }
+
+    /**
+     * Delete a {{ model }}.
+     */
+    public function delete{{ model }}(int $id): bool
+    {
+        ${{ camelModel }} = $this->get{{ model }}ById($id);
+        
+        if (!${{ camelModel }}) {
+            throw new \Exception('{{ model }} not found');
+        }
+
+        // Check if {{ model }} is being used
+        if ($this->is{{ model }}InUse($id)) {
+            throw new \Exception('Cannot delete {{ model }} that is being used');
+        }
+
+        return $this->{{ camelModel }}Repository->delete(${{ camelModel }});
+    }
+
+    /**
+     * Search {{ pluralModel }}.
+     */
+    public function search{{ pluralModel }}(string $query, array $with = [], int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->{{ camelModel }}Repository->search($query, $with, $perPage);
+    }
+
+    /**
+     * Get {{ model }} statistics.
+     */
+    public function get{{ model }}Statistics(): array
+    {
+        return $this->{{ camelModel }}Repository->getStatistics();
+    }
+
+    /**
+     * Check if {{ model }} is in use.
+     */
+    public function is{{ model }}InUse(int ${{ camelModel }}Id): bool
+    {
+        // Implement your business logic to check if the {{ model }} is being used
+        // Example: return $this->{{ camelModel }}Repository->hasRelatedRecords(${{ camelModel }}Id);
+        return false;
+    }
+
+    /**
+     * Validate {{ model }} data.
+     */
+    protected function validate{{ model }}Data(array $data, ?int $excludeId = null): void
+    {
+        // Implement your validation logic here
+        // Example:
+        // if (isset($data['name']) && $this->{{ camelModel }}Repository->nameExists($data['name'], $excludeId)) {
+        //     throw ValidationException::withMessages([
+        //         'name' => ['The {{ model }} name has already been taken.']
+        //     ]);
+        // }
+    }
+
+    /**
+     * Get {{ pluralModel }} by status.
+     */
+    public function get{{ pluralModel }}ByStatus(string $status, array $with = []): Collection
+    {
+        return $this->{{ camelModel }}Repository->getByStatus($status, $with);
+    }
+
+    /**
+     * Get active {{ pluralModel }}.
+     */
+    public function getActive{{ pluralModel }}(array $with = []): Collection
+    {
+        return $this->{{ camelModel }}Repository->getActive{{ pluralModel }}($with);
+    }
+}
