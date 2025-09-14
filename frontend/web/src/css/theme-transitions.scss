@@ -1,0 +1,90 @@
+// Global theme transition styles
+// Transisi halus untuk pergantian tema
+
+* {
+  transition: 
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Specific transitions untuk komponen Quasar
+.q-card,
+.q-item,
+.q-btn,
+.q-input,
+.q-select,
+.q-field,
+.q-toolbar,
+.q-header,
+.q-drawer,
+.q-page,
+.q-layout {
+  transition: 
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+// Theme-specific body classes
+body.theme-light {
+  background-color: #ffffff;
+  color: #1d1d1d;
+}
+
+body.theme-dark {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+// Smooth transitions untuk theme switching
+body {
+  transition: 
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Disable transitions saat prefers-reduced-motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Custom theme transition untuk specific elements
+.theme-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Theme-aware shadows
+.theme-shadow {
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.theme-light .theme-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-dark .theme-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+// Theme-aware borders
+.theme-border {
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.theme-light .theme-border {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.theme-dark .theme-border {
+  border-color: rgba(255, 255, 255, 0.12);
+}

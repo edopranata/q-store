@@ -1,0 +1,335 @@
+#####################################
+# GLOBAL IGNORES
+#####################################
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Global Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.backup
+.env.staging
+.env.testing
+
+# Editor directories and files
+.idea/
+.vscode/
+.fleet/
+.zed/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Vim
+*.swp
+*.swo
+*.swn
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list/
+tramp
+
+# Temporary folders
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.dmg
+*.iso
+
+# Certificate files
+*.pem
+*.key
+*.crt
+*.csr
+
+# Docker
+Dockerfile.local
+docker-compose.override.yml
+
+# Cloud & DevOps
+*.kubeconfig
+*.tfstate
+*.tfstate.*
+.terraform/
+.aws/
+.gcloud/
+.azure/
+.sentryclirc
+
+# Homestead
+Homestead.json
+Homestead.yaml
+auth.json
+
+#####################################
+# BACKEND (Laravel) SPECIFIC
+#####################################
+
+# Laravel Dependencies
+backend/vendor/
+backend/composer.phar
+backend/node_modules/
+
+# Laravel Environment
+backend/.env
+backend/.env.backup
+backend/.env.production
+
+# Laravel Storage & Cache
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+backend/storage/app/*
+!backend/storage/app/.gitkeep
+!backend/storage/app/public/
+!backend/storage/app/private/
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/cache/data/
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitkeep
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitkeep
+backend/storage/framework/testing/*
+!backend/storage/framework/testing/.gitkeep
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+backend/storage/*.key
+backend/storage/pail/
+
+# Laravel Public Assets
+backend/public/storage
+backend/public/hot
+backend/public/build/
+
+# Laravel Testing & Development
+backend/.phpunit.result.cache
+backend/.phpunit.cache/
+backend/.phpactor.json
+backend/coverage/
+backend/_ide_helper.php
+backend/_ide_helper_models.php
+backend/.phpstorm.meta.php
+
+# Laravel Database
+backend/database/*.sqlite
+backend/database/*.sqlite3
+backend/database/*.db
+
+# Laravel Logs
+backend/*.log
+backend/storage/logs/*.log
+backend/laravel.log
+
+# Laravel Nova
+backend/.nova/
+
+# PHP specific
+backend/*.php~
+backend/*.php.bak
+backend/*.php.swp
+backend/*.php.tmp
+
+#####################################
+# FRONTEND (Quasar/Vue.js) SPECIFIC
+#####################################
+
+# Node Dependencies
+frontend/web/node_modules/
+frontend/android/node_modules/
+frontend/ios/node_modules/
+
+# Frontend Environment
+frontend/web/.env.local*
+frontend/android/.env
+frontend/ios/.env
+
+# Quasar Core
+frontend/web/.quasar/
+frontend/web/quasar.config.*.temporary.compiled*
+
+# Quasar Build Outputs
+frontend/web/dist/
+frontend/web/build/
+frontend/web/out/
+
+# Quasar Cordova
+frontend/web/src-cordova/node_modules/
+frontend/web/src-cordova/platforms/
+frontend/web/src-cordova/plugins/
+frontend/web/src-cordova/www/
+
+# Quasar Capacitor
+frontend/web/src-capacitor/www/
+frontend/web/src-capacitor/node_modules/
+frontend/web/src-capacitor/dist/
+
+# Quasar BEX (Browser Extension)
+frontend/web/src-bex/www/
+frontend/web/src-bex/dist/
+
+# Quasar Electron
+frontend/web/dist/electron/
+frontend/web/src-electron/main-process/
+frontend/web/src-electron/preload/
+
+# Frontend Logs
+frontend/web/*.log
+frontend/web/npm-debug.log*
+frontend/web/yarn-debug.log*
+frontend/web/yarn-error.log*
+frontend/web/lerna-debug.log*
+frontend/web/.pnpm-debug.log*
+
+# Frontend Cache
+frontend/web/.cache/
+frontend/web/.parcel-cache/
+frontend/web/.eslintcache
+frontend/web/.npm/
+frontend/web/.yarn-integrity
+
+# Frontend Coverage
+frontend/web/coverage/
+frontend/web/*.lcov
+frontend/web/.nyc_output/
+
+# TypeScript
+frontend/web/*.tsbuildinfo
+
+# Vue.js specific
+frontend/web/*.vue.js
+frontend/web/*.vue.es.js
+frontend/web/*.vue.common.js
+frontend/web/*.vue.umd.js
+frontend/web/*.vue.umd.min.js
+
+# Mobile specific
+frontend/android/build/
+frontend/android/.gradle/
+frontend/android/local.properties
+frontend/ios/build/
+frontend/ios/DerivedData/
+frontend/ios/*.xcworkspace/xcuserdata/
+
+#####################################
+# DOCUMENTATION SPECIFIC
+#####################################
+
+# Documentation build
+docs/_site/
+docs/.sass-cache/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/node_modules/
+docs/build/
+docs/dist/
+
+# Documentation temp files
+docs/*.tmp
+docs/*.temp
+docs/.docusaurus/
+
+#####################################
+# PROJECT ROOT SPECIFIC
+#####################################
+
+# Root level dependencies (if any)
+/node_modules/
+/vendor/
+
+# Root level build outputs
+/dist/
+/build/
+/out/
+
+# Root level logs
+/*.log
+/logs/
+
+# Root level environment files
+/.env
+/.env.*
+!/.env.example
+
+# Package managers (keep yarn.lock for frontend)
+package-lock.json
+.pnpm-lock.yaml
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+#####################################
+# ADDITIONAL IGNORES
+#####################################
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# System files
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Documentation temp files
+*.md.tmp
+*.md.backup
+
+# Project specific documentation (if needed)
+# CSS_REFACTORING_DOCUMENTATION.md

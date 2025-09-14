@@ -1,0 +1,21 @@
+// Export all services for easy importing
+export { categoryService } from './categoryService'
+export { unitService } from './unitService'
+export { supplierService } from './supplierService'
+export { customerService } from './customerService'
+export { warehouseService } from './warehouseService'
+export { paymentMethodService } from './paymentMethodService'
+export { dashboardService } from './dashboardService'
+export { productService } from './productService'
+export { posService } from './posService'
+
+// Default exports with different names
+export { default as categoryServiceDefault } from './categoryService'
+export { default as unitServiceDefault } from './unitService'
+export { default as supplierServiceDefault } from './supplierService'
+export { default as customerServiceDefault } from './customerService'
+export { default as warehouseServiceDefault } from './warehouseService'
+export { default as paymentMethodServiceDefault } from './paymentMethodService'
+export { default as dashboardServiceDefault } from './dashboardService'
+export { default as productServiceDefault } from './productService'
+export { default as posServiceDefault } from './posService'
