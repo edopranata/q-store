@@ -18,6 +18,8 @@
   - [Inventory Management](#inventory-management)
   - [Sales Management](#sales-management)
   - [Customer Management](#customer-management)
+  - [Supplier Management](#supplier-management)
+  - [Warehouse Management](#warehouse-management)
   - [Reporting](#reporting)
 - [Webhooks](#webhooks)
 - [SDK & Libraries](#sdk--libraries)
@@ -2798,6 +2800,356 @@ Create webhook endpoint.
   "events": ["transaction.created", "stock.low"],
   "secret": "your-webhook-secret",
   "is_active": true
+}
+```
+
+## Supplier Management
+
+### 🏭 List Suppliers
+
+**GET** `/api/v1/suppliers`
+
+Get paginated list of suppliers.
+
+#### Query Parameters
+- `page`: Page number
+- `per_page`: Items per page
+- `search`: Search by name, phone, or email
+- `is_active`: Filter by status
+- `sort`: Sort field
+- `order`: Sort order
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "PT. Supplier Utama",
+      "code": "SUP001",
+      "phone": "+6281234567890",
+      "email": "supplier@example.com",
+      "address": "Jl. Industri No. 123, Jakarta",
+      "contact_person": "John Supplier",
+      "bank_name": "Bank BCA",
+      "bank_account": "1234567890",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 15,
+    "total": 25,
+    "last_page": 2
+  }
+}
+```
+
+### 🏭 Get Supplier
+
+**GET** `/api/v1/suppliers/{id}`
+
+Get specific supplier details.
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "PT. Supplier Utama",
+    "code": "SUP001",
+    "phone": "+6281234567890",
+    "email": "supplier@example.com",
+    "address": "Jl. Industri No. 123, Jakarta",
+    "city": "Jakarta",
+    "postal_code": "12345",
+    "contact_person": "John Supplier",
+    "bank_name": "Bank BCA",
+    "bank_account": "1234567890",
+    "is_active": true,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-25T11:30:00Z"
+  }
+}
+```
+
+### ➕ Create Supplier
+
+**POST** `/api/v1/suppliers`
+
+Create new supplier.
+
+#### Request
+```json
+{
+  "name": "PT. Supplier Baru",
+  "phone": "+6281234567891",
+  "email": "newsupplier@example.com",
+  "address": "Jl. Perdagangan No. 456, Jakarta",
+  "city": "Jakarta",
+  "postal_code": "12346",
+  "contact_person": "Jane Supplier",
+  "bank_name": "Bank Mandiri",
+  "bank_account": "0987654321",
+  "is_active": true
+}
+```
+
+#### Response (201)
+```json
+{
+  "success": true,
+  "message": "Supplier created successfully",
+  "data": {
+    "id": 2,
+    "name": "PT. Supplier Baru",
+    "code": "SUP002",
+    "phone": "+6281234567891",
+    "email": "newsupplier@example.com",
+    "address": "Jl. Perdagangan No. 456, Jakarta",
+    "city": "Jakarta",
+    "postal_code": "12346",
+    "contact_person": "Jane Supplier",
+    "bank_name": "Bank Mandiri",
+    "bank_account": "0987654321",
+    "is_active": true,
+    "created_at": "2025-01-15T10:00:00Z",
+    "updated_at": "2025-01-15T10:00:00Z"
+  }
+}
+```
+
+### ✏️ Update Supplier
+
+**PUT** `/api/v1/suppliers/{id}`
+
+Update existing supplier.
+
+#### Request
+```json
+{
+  "name": "PT. Supplier Updated",
+  "phone": "+6281234567892",
+  "email": "updated@example.com",
+  "address": "Jl. Updated No. 789, Jakarta",
+  "city": "Jakarta",
+  "postal_code": "12347",
+  "contact_person": "Updated Person",
+  "bank_name": "Bank BNI",
+  "bank_account": "1122334455",
+  "is_active": true
+}
+```
+
+### 🗑️ Delete Supplier
+
+**DELETE** `/api/v1/suppliers/{id}`
+
+Delete supplier (soft delete).
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "message": "Supplier deleted successfully"
+}
+```
+
+## Warehouse Management
+
+### 🏪 List Warehouses
+
+**GET** `/api/v1/warehouses`
+
+Get paginated list of warehouses.
+
+#### Query Parameters
+- `page`: Page number
+- `per_page`: Items per page
+- `search`: Search by name or code
+- `is_active`: Filter by status
+- `sort`: Sort field
+- `order`: Sort order
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Warehouse Utama",
+      "code": "WH001",
+      "address": "Jl. Gudang No. 123, Jakarta",
+      "phone": "+6281234567890",
+      "manager_name": "John Manager",
+      "capacity": 1000.00,
+      "current_stock_value": 50000000.00,
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 15,
+    "total": 5,
+    "last_page": 1
+  }
+}
+```
+
+### 🏪 Get Warehouse
+
+**GET** `/api/v1/warehouses/{id}`
+
+Get specific warehouse details with inventory summary.
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Warehouse Utama",
+    "code": "WH001",
+    "address": "Jl. Gudang No. 123, Jakarta",
+    "city": "Jakarta",
+    "postal_code": "12345",
+    "phone": "+6281234567890",
+    "manager_name": "John Manager",
+    "capacity": 1000.00,
+    "current_stock_value": 50000000.00,
+    "inventory_summary": {
+      "total_products": 150,
+      "total_stock_quantity": 5000,
+      "low_stock_items": 12,
+      "out_of_stock_items": 3
+    },
+    "is_active": true,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-25T11:30:00Z"
+  }
+}
+```
+
+### ➕ Create Warehouse
+
+**POST** `/api/v1/warehouses`
+
+Create new warehouse.
+
+#### Request
+```json
+{
+  "name": "Warehouse Cabang",
+  "address": "Jl. Cabang No. 456, Surabaya",
+  "city": "Surabaya",
+  "postal_code": "60123",
+  "phone": "+6281234567891",
+  "manager_name": "Jane Manager",
+  "capacity": 500.00,
+  "is_active": true
+}
+```
+
+#### Response (201)
+```json
+{
+  "success": true,
+  "message": "Warehouse created successfully",
+  "data": {
+    "id": 2,
+    "name": "Warehouse Cabang",
+    "code": "WH002",
+    "address": "Jl. Cabang No. 456, Surabaya",
+    "city": "Surabaya",
+    "postal_code": "60123",
+    "phone": "+6281234567891",
+    "manager_name": "Jane Manager",
+    "capacity": 500.00,
+    "current_stock_value": 0.00,
+    "is_active": true,
+    "created_at": "2025-01-15T10:00:00Z",
+    "updated_at": "2025-01-15T10:00:00Z"
+  }
+}
+```
+
+### ✏️ Update Warehouse
+
+**PUT** `/api/v1/warehouses/{id}`
+
+Update existing warehouse.
+
+#### Request
+```json
+{
+  "name": "Warehouse Updated",
+  "address": "Jl. Updated No. 789, Bandung",
+  "city": "Bandung",
+  "postal_code": "40123",
+  "phone": "+6281234567892",
+  "manager_name": "Updated Manager",
+  "capacity": 750.00,
+  "is_active": true
+}
+```
+
+### 🗑️ Delete Warehouse
+
+**DELETE** `/api/v1/warehouses/{id}`
+
+Delete warehouse (soft delete).
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "message": "Warehouse deleted successfully"
+}
+```
+
+### 📊 Warehouse Inventory
+
+**GET** `/api/v1/warehouses/{id}/inventory`
+
+Get inventory details for specific warehouse.
+
+#### Query Parameters
+- `page`: Page number
+- `per_page`: Items per page
+- `search`: Search by product name or code
+- `category_id`: Filter by category
+- `low_stock`: Show only low stock items
+- `out_of_stock`: Show only out of stock items
+
+#### Response (200)
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "product_id": 1,
+      "product_name": "Beras Premium 5kg",
+      "product_code": "BRS001",
+      "current_stock": 50,
+      "minimum_stock": 10,
+      "maximum_stock": 100,
+      "unit_name": "Karung",
+      "last_updated": "2025-01-15T10:00:00Z",
+      "stock_value": 3750000.00,
+      "status": "normal"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "per_page": 15,
+    "total": 150,
+    "last_page": 10
+  }
 }
 ```
 

@@ -275,6 +275,11 @@ CREATE TABLE warehouses (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
+**Recent Updates (v0.1.3)**:
+- Enhanced warehouse management API endpoints
+- Improved inventory tracking across multiple warehouses
+- Added warehouse-specific inventory management features
+
 ### 📦 Product Management
 
 #### products
@@ -492,6 +497,11 @@ CREATE TABLE customers (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
+**Recent Updates (v0.1.3)**:
+- Enhanced customer management API endpoints
+- Improved loyalty points system integration
+- Added comprehensive customer search capabilities
+
 #### customer_loyalty_points
 ```sql
 CREATE TABLE customer_loyalty_points (
@@ -629,6 +639,11 @@ CREATE TABLE suppliers (
     FULLTEXT idx_suppliers_search (name, contact_person, phone, email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
+
+**Recent Updates (v0.1.3)**:
+- Enhanced API endpoints for supplier management
+- Improved search functionality with FULLTEXT indexing
+- Added comprehensive CRUD operations support
 
 ## Relationships
 

@@ -143,12 +143,12 @@ src/
 │   │   ├── RoleManagementPage.vue # Role management (refactored)
 │   │   └── ...         # Other settings pages
 │   └── reports/         # Report pages
-├── stores/             # Pinia stores
-│   ├── auth.js         # Authentication store
-│   ├── products.js     # Products store
-│   ├── sales.js        # Sales store
-│   ├── theme.js        # Theme management store
-│   └── ui.js           # UI state store
+├── stores/             # Pinia stores (Vue.js reactive state management)
+│   ├── auth.js         # Authentication store (optimized computed properties)
+│   ├── products.js     # Products store (fixed readonly warnings)
+│   ├── sales.js        # Sales store (improved reactivity)
+│   ├── theme.js        # Theme management store (enhanced performance)
+│   └── ui.js           # UI state store (optimized state updates)
 ├── services/           # API services
 │   ├── api.js          # Base API configuration
 │   ├── auth.js         # Auth API calls
@@ -219,6 +219,28 @@ User Interaction
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │ Component   │    │ Reactive    │    │   Backend   │
 │ Re-render   │◀───│ Updates     │◀───│   (Laravel) │
+└─────────────┘    └─────────────┘    └─────────────┘
+```
+
+### 🔧 Vue.js Reactivity Optimizations
+
+**Recent Improvements (v0.1.3)**:
+- **Fixed Readonly Computed Property Warnings**: Resolved Vue.js warnings about attempting to modify readonly computed properties
+- **Enhanced Store Performance**: Optimized Pinia store computed properties for better reactivity
+- **Improved Developer Experience**: Eliminated console warnings during development
+- **Better State Management**: Enhanced reactive state updates across all stores
+
+```
+Before (with warnings):
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Computed    │───▶│ Direct      │───▶│ Console     │
+│ Property    │    │ Mutation    │    │ Warnings    │
+└─────────────┘    └─────────────┘    └─────────────┘
+
+After (optimized):
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Computed    │───▶│ Proper      │───▶│ Clean       │
+│ Property    │    │ Reactivity  │    │ Console     │
 └─────────────┘    └─────────────┘    └─────────────┘
 ```
 

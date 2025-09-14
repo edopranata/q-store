@@ -53,13 +53,15 @@ Q-POS bertujuan menjadi solusi Point of Sale yang komprehensif, modern, dan muda
 | **Documentation** | 95% | 🟢 Complete |
 | **Testing** | 60% | 🟡 In Progress |
 
-### ✅ Completed Features (v0.7.0)
+### ✅ Completed Features (v0.1.3)
 
 #### Core System
 - ✅ User authentication & authorization
 - ✅ Role-based access control (RBAC)
 - ✅ Advanced permission management
 - ✅ User management with enhanced profiles
+- ✅ Enhanced User CRUD API endpoints
+- ✅ User search and pagination functionality
 - ✅ Database migrations & seeders
 - ✅ Comprehensive API documentation
 
@@ -88,6 +90,9 @@ Q-POS bertujuan menjadi solusi Point of Sale yang komprehensif, modern, dan muda
 - ✅ Accessibility features
 - ✅ Smooth theme transitions
 - ✅ System preference detection
+- ✅ Vue.js reactivity optimizations
+- ✅ Fixed readonly computed property warnings
+- ✅ Enhanced Pinia store performance
 
 #### Documentation & Testing
 - ✅ Complete technical documentation
@@ -96,6 +101,9 @@ Q-POS bertujuan menjadi solusi Point of Sale yang komprehensif, modern, dan muda
 - ✅ Architecture documentation
 - ✅ Testing framework setup
 - ✅ Theme system test cases
+- ✅ User Management API test cases
+- ✅ Vue.js reactivity testing
+- ✅ Enhanced database schema documentation
 
 ### 🚧 In Development (v0.8.0)
 

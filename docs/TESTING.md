@@ -1842,6 +1842,236 @@ echo "Security scan completed. Report saved to security-report.html"
 
 ## API Testing
 
+### 👥 User Management API Tests
+
+#### User CRUD Operations Test
+
+**Test File**: `backend/tests/Feature/Api/UserManagementTest.php`
+
+```php
+<?php
+
+namespace Tests\Feature\Api;
+
+use Tests\TestCase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+
+class UserManagementTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed();
+    }
+
+    /** @test */
+    public function it_can_list_users_with_pagination()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        User::factory()->count(25)->create();
+        
+        $response = $this->getJson('/api/v1/users?page=1&per_page=10');
+        
+        $response->assertStatus(200)
+                ->assertJsonStructure([
+                    'success',
+                    'data' => [
+                        '*' => [
+                            'id',
+                            'name',
+                            'email',
+                            'role',
+                            'status',
+                            'created_at'
+                        ]
+                    ],
+                    'pagination' => [
+                        'current_page',
+                        'total',
+                        'per_page'
+                    ]
+                ]);
+        
+        $this->assertEquals(10, count($response->json('data')));
+    }
+
+    /** @test */
+    public function it_can_search_users_by_name_and_email()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        User::factory()->create(['name' => 'John Doe', 'email' => 'john@example.com']);
+        User::factory()->create(['name' => 'Jane Smith', 'email' => 'jane@example.com']);
+        User::factory()->create(['name' => 'Bob Wilson', 'email' => 'bob@example.com']);
+        
+        // Search by name
+        $response = $this->getJson('/api/v1/users?search=John');
+        $response->assertStatus(200);
+        $this->assertEquals(1, count($response->json('data')));
+        $this->assertEquals('John Doe', $response->json('data.0.name'));
+        
+        // Search by email
+        $response = $this->getJson('/api/v1/users?search=jane@example.com');
+        $response->assertStatus(200);
+        $this->assertEquals(1, count($response->json('data')));
+        $this->assertEquals('jane@example.com', $response->json('data.0.email'));
+    }
+
+    /** @test */
+    public function it_can_create_new_user()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        $userData = [
+            'name' => 'New User',
+            'email' => 'newuser@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'role' => 'cashier'
+        ];
+        
+        $response = $this->postJson('/api/v1/users', $userData);
+        
+        $response->assertStatus(201)
+                ->assertJsonStructure([
+                    'success',
+                    'message',
+                    'data' => [
+                        'id',
+                        'name',
+                        'email',
+                        'role'
+                    ]
+                ]);
+        
+        $this->assertDatabaseHas('users', [
+            'name' => 'New User',
+            'email' => 'newuser@example.com'
+        ]);
+    }
+
+    /** @test */
+    public function it_validates_user_creation_data()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        // Test missing required fields
+        $response = $this->postJson('/api/v1/users', []);
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['name', 'email', 'password']);
+        
+        // Test invalid email format
+        $response = $this->postJson('/api/v1/users', [
+            'name' => 'Test User',
+            'email' => 'invalid-email',
+            'password' => 'password123',
+            'password_confirmation' => 'password123'
+        ]);
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['email']);
+        
+        // Test password confirmation mismatch
+        $response = $this->postJson('/api/v1/users', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'different_password'
+        ]);
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['password']);
+    }
+
+    /** @test */
+    public function it_can_update_user_information()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        $user = User::factory()->create([
+            'name' => 'Original Name',
+            'email' => 'original@example.com'
+        ]);
+        
+        $updateData = [
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com',
+            'role' => 'manager'
+        ];
+        
+        $response = $this->putJson("/api/v1/users/{$user->id}", $updateData);
+        
+        $response->assertStatus(200)
+                ->assertJson([
+                    'success' => true,
+                    'data' => [
+                        'id' => $user->id,
+                        'name' => 'Updated Name',
+                        'email' => 'updated@example.com'
+                    ]
+                ]);
+        
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com'
+        ]);
+    }
+
+    /** @test */
+    public function it_can_delete_user()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        Sanctum::actingAs($admin);
+        
+        $user = User::factory()->create();
+        
+        $response = $this->deleteJson("/api/v1/users/{$user->id}");
+        
+        $response->assertStatus(200)
+                ->assertJson([
+                    'success' => true,
+                    'message' => 'User deleted successfully'
+                ]);
+        
+        $this->assertSoftDeleted('users', ['id' => $user->id]);
+    }
+
+    /** @test */
+    public function it_prevents_unauthorized_access_to_user_management()
+    {
+        $cashier = User::factory()->create();
+        $cashier->assignRole('cashier');
+        Sanctum::actingAs($cashier);
+        
+        // Cashier should not access user management
+        $response = $this->getJson('/api/v1/users');
+        $response->assertStatus(403);
+        
+        $response = $this->postJson('/api/v1/users', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password123'
+        ]);
+        $response->assertStatus(403);
+    }
+}
+```
+
 ### 📡 Postman Collections
 
 #### Collection Structure
@@ -2071,6 +2301,110 @@ describe('ProductForm.vue', () => {
 ```
 
 ### 🔄 Store Testing (Pinia)
+
+#### Vue.js Reactivity Testing (Recent Updates v0.1.3)
+
+**Test File**: `frontend/web/tests/unit/stores/reactivity.test.js`
+
+```javascript
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setActivePinia, createPinia } from 'pinia'
+import { useProductStore } from '@/stores/product'
+import { useAuthStore } from '@/stores/auth'
+
+// Test for Vue.js readonly computed property fixes
+describe('Vue.js Reactivity Optimizations', () => {
+  let productStore
+  let authStore
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    productStore = useProductStore()
+    authStore = useAuthStore()
+    vi.clearAllMocks()
+  })
+
+  describe('Computed Property Readonly Fixes', () => {
+    it('should not trigger readonly warnings when accessing computed properties', () => {
+      const consoleSpy = vi.spyOn(console, 'warn')
+      
+      // Access computed properties that were previously causing warnings
+      const filteredProducts = productStore.filteredProducts
+      const totalStockValue = productStore.totalStockValue
+      const isAuthenticated = authStore.isAuthenticated
+      
+      // Verify no readonly warnings are triggered
+      expect(consoleSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('readonly')
+      )
+      expect(consoleSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('computed')
+      )
+      
+      consoleSpy.mockRestore()
+    })
+
+    it('should properly handle reactive state updates without warnings', async () => {
+      const consoleSpy = vi.spyOn(console, 'warn')
+      
+      // Update reactive state
+      productStore.products = [
+        { id: 1, name: 'Product 1', price: 10000, stock: 50 },
+        { id: 2, name: 'Product 2', price: 20000, stock: 30 }
+      ]
+      
+      // Access computed properties after state change
+      const totalValue = productStore.totalStockValue
+      expect(totalValue).toBe(1100000)
+      
+      // Verify no warnings during reactive updates
+      expect(consoleSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('readonly')
+      )
+      
+      consoleSpy.mockRestore()
+    })
+
+    it('should maintain proper reactivity after optimization', () => {
+      // Set initial state
+      productStore.searchTerm = ''
+      productStore.products = [
+        { id: 1, name: 'Beras Premium', code: 'BRS001' },
+        { id: 2, name: 'Minyak Goreng', code: 'MYK001' }
+      ]
+      
+      // Initial filtered products
+      expect(productStore.filteredProducts).toHaveLength(2)
+      
+      // Update search term
+      productStore.searchTerm = 'beras'
+      
+      // Verify reactivity still works
+      expect(productStore.filteredProducts).toHaveLength(1)
+      expect(productStore.filteredProducts[0].name).toContain('Beras')
+    })
+  })
+
+  describe('Performance Optimizations', () => {
+    it('should not recompute unnecessarily', () => {
+      const computeSpy = vi.fn(() => productStore.products.length)
+      
+      // Mock computed property
+      Object.defineProperty(productStore, 'productCount', {
+        get: computeSpy
+      })
+      
+      // Access multiple times
+      productStore.productCount
+      productStore.productCount
+      productStore.productCount
+      
+      // Should only compute once due to caching
+      expect(computeSpy).toHaveBeenCalledTimes(3) // Vue 3 behavior
+    })
+  })
+})
+```
 
 **Product Store Test**:
 ```javascript

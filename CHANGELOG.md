@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 15 January 2025
+
+### Added
+#### 🔧 Backend API Enhancements
+- ✅ **Customer Management API**: Complete CRUD operations with advanced filtering and pagination
+- ✅ **Supplier Management API**: Comprehensive supplier management with contact information
+- ✅ **Warehouse Management API**: Multi-warehouse support with inventory tracking
+- ✅ **Enhanced Repository Pattern**: Improved repository implementations for better data access
+- ✅ **Service Layer Improvements**: Enhanced service classes with better error handling
+
+#### 🎨 Frontend Store Management
+- ✅ **Pinia Store Optimization**: Improved state management with better reactivity
+- ✅ **Vue.js Compatibility**: Enhanced Vue.js 3 compatibility and performance
+- ✅ **Component State Management**: Better component state handling and data flow
+
+### Fixed
+- 🐛 **Vue.js Computed Properties**: Resolved readonly computed property modification warnings
+- 🐛 **Reactivity System**: Fixed Vue.js reactivity system warnings and errors
+- 🐛 **Store State Management**: Corrected Pinia store state mutations and computed properties
+- 🐛 **Console Warnings**: Eliminated development console warnings for better debugging experience
+- 🐛 **Component Lifecycle**: Fixed component lifecycle issues and memory leaks
+
+### Changed
+- 🔄 **Store Architecture**: Refactored Pinia stores for better performance and maintainability
+- 🔄 **API Integration**: Improved API service integration with better error handling
+- 🔄 **Code Quality**: Enhanced code quality with better TypeScript support and linting
+
+### Technical Improvements
+- ⚡ **Performance**: Improved application performance with optimized state management
+- 🔒 **Stability**: Enhanced application stability with proper error handling
+- 🧪 **Testing**: Updated test cases for User endpoints with edge case coverage
+- 📝 **Code Documentation**: Better code documentation and inline comments
+
+### Files Modified
+- **Backend**: 3 new API controllers, 3 repositories, 3 services, updated routing
+- **Frontend**: 8 Pinia stores, 4 Vue pages, 3 service files
+- **Tests**: Enhanced User endpoint tests with edge cases
+
 ### Planned for Q4 2025
 - Advanced discount management system
 - Comprehensive tax calculation engine
@@ -247,8 +285,8 @@ Q-POS menggunakan [Semantic Versioning](https://semver.org/):
 
 ## Support Policy
 
-- **Current Version (0.7.x)**: Full support dengan bug fixes dan security updates
-- **Previous Major (0.6.x)**: Security updates only sampai Q1 2026
+- **Current Version (0.2.x)**: Full support dengan bug fixes dan security updates
+- **Previous Major (0.1.x)**: Security updates only sampai Q1 2026
 - **Older Versions**: End of life, tidak ada support
 
 ## Migration Guides
