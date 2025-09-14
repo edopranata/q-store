@@ -36,7 +36,7 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * Get paginated products with optional filters.
      */
-    public function getPaginated(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator
+    public function getPaginated(array $filters = [], array $with = [], int $perPage = 15, array $withCount = [], string $sortBy = 'created_at', string $sortOrder = 'desc'): LengthAwarePaginator
     {
         $query = $this->model->newQuery();
 
@@ -44,7 +44,25 @@ class ProductRepository implements ProductRepositoryInterface
             $query->with($with);
         }
 
+        if (!empty($withCount)) {
+            $query->withCount($withCount);
+        }
+
         $this->applyFilters($query, $filters);
+
+        // Validate sort field
+        $allowedSortFields = ['id', 'name', 'sku', 'barcode', 'price', 'cost', 'stock', 'status', 'created_at', 'updated_at'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'created_at';
+        }
+
+        // Validate sort order
+        $sortOrder = strtolower($sortOrder);
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
+
+        $query->orderBy($sortBy, $sortOrder);
 
         return $query->paginate($perPage);
     }

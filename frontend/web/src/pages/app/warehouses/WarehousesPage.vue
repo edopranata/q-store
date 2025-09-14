@@ -55,7 +55,7 @@
           :rows="warehouses"
           :columns="columns"
           :loading="warehousesStore.isLoading"
-          :pagination="pagination"
+          v-model:pagination="pagination"
           @request="onRequest"
           row-key="id"
           server-side-pagination
@@ -128,19 +128,12 @@
               <div class="col">
                 <q-input
                   v-model="warehouseForm.code"
-                  label="Kode Gudang"
+                  label="Kode Gudang *"
                   outlined
+                  :rules="[val => !!val || 'Kode gudang wajib diisi']"
                 />
               </div>
             </div>
-
-            <q-input
-              v-model="warehouseForm.description"
-              label="Deskripsi"
-              outlined
-              type="textarea"
-              rows="3"
-            />
 
             <q-input
               v-model="warehouseForm.address"
@@ -149,23 +142,6 @@
               type="textarea"
               rows="3"
             />
-
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-input
-                  v-model="warehouseForm.city"
-                  label="Kota"
-                  outlined
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="warehouseForm.postal_code"
-                  label="Kode Pos"
-                  outlined
-                />
-              </div>
-            </div>
 
             <div class="row q-col-gutter-md">
               <div class="col">
@@ -183,14 +159,6 @@
                 />
               </div>
             </div>
-
-            <q-input
-              v-model="warehouseForm.notes"
-              label="Catatan"
-              outlined
-              type="textarea"
-              rows="2"
-            />
 
             <q-select
               v-model="warehouseForm.status"
@@ -228,13 +196,9 @@
           <div class="q-gutter-sm">
             <div><strong>Nama:</strong> {{ selectedWarehouse.name }}</div>
             <div v-if="selectedWarehouse.code"><strong>Kode:</strong> {{ selectedWarehouse.code }}</div>
-            <div v-if="selectedWarehouse.description"><strong>Deskripsi:</strong> {{ selectedWarehouse.description }}</div>
             <div v-if="selectedWarehouse.address"><strong>Alamat:</strong> {{ selectedWarehouse.address }}</div>
-            <div v-if="selectedWarehouse.city"><strong>Kota:</strong> {{ selectedWarehouse.city }}</div>
-            <div v-if="selectedWarehouse.postal_code"><strong>Kode Pos:</strong> {{ selectedWarehouse.postal_code }}</div>
             <div v-if="selectedWarehouse.manager_name"><strong>Manager:</strong> {{ selectedWarehouse.manager_name }}</div>
             <div v-if="selectedWarehouse.phone"><strong>Telepon:</strong> {{ selectedWarehouse.phone }}</div>
-            <div v-if="selectedWarehouse.notes"><strong>Catatan:</strong> {{ selectedWarehouse.notes }}</div>
             <div>
               <strong>Status:</strong>
               <q-badge
@@ -275,13 +239,9 @@ const warehouseForm = ref({
   id: null,
   name: '',
   code: '',
-  description: '',
   address: '',
-  city: '',
-  postal_code: '',
   manager_name: '',
   phone: '',
-  notes: '',
   status: 'active'
 })
 
@@ -313,12 +273,7 @@ const columns = [
     align: 'left',
     field: 'manager_name'
   },
-  {
-    name: 'city',
-    label: 'Kota',
-    align: 'left',
-    field: 'city'
-  },
+
   {
     name: 'phone',
     label: 'Telepon',
@@ -349,8 +304,12 @@ const columns = [
 
 // Computed
 const warehouses = computed(() => warehousesStore.getWarehouses || [])
-const pagination = computed(() => warehousesStore.getPagination)
-const filters = computed(() => warehousesStore.getFilters)
+const pagination = computed(() => warehousesStore.pagination)
+
+const filters = computed({
+  get: () => warehousesStore.getFilters,
+  set: (value) => warehousesStore.setFilters(value)
+})
 
 // Watchers
 watch(() => filters.value.search, () => {
@@ -438,13 +397,9 @@ const closeDialog = () => {
     id: null,
     name: '',
     code: '',
-    description: '',
     address: '',
-    city: '',
-    postal_code: '',
     manager_name: '',
     phone: '',
-    notes: '',
     status: 'active'
   }
 }

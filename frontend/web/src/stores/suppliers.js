@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { api } from 'boot/axios'
+import { supplierService } from 'src/services/supplierService'
 import { Notify } from 'quasar'
 
 export const useSuppliersStore = defineStore('suppliers', {
@@ -29,7 +29,7 @@ export const useSuppliersStore = defineStore('suppliers', {
     all: (state) => state.suppliers,
     current: (state) => state.supplier,
     loading: (state) => state.isLoading,
-    isSubmitting: (state) => state.isSubmitting,
+    submitting: (state) => state.isSubmitting,
     pagination: (state) => state.table.pagination,
     getFilters: (state) => state.table.filters,
     getActiveSuppliers: (state) => state.suppliers.filter(supplier => supplier.status === 'active'),
@@ -79,31 +79,21 @@ export const useSuppliersStore = defineStore('suppliers', {
         const pagination = props.pagination || this.table.pagination
         const filter = props.filter !== undefined ? props.filter : this.table.filters.search
         
+        // Build pagination parameters
+        const paginationParams = supplierService.buildPaginationParams(pagination)
+        
         // Build API parameters
         const params = {
-          page: pagination.page || 1,
-          per_page: pagination.rowsPerPage || 15,
+          ...paginationParams,
           search: filter || '',
-          status: this.table.filters.status || '',
-          sort_by: pagination.sortBy || 'name',
-          sort_order: pagination.descending ? 'desc' : 'asc'
+          status: this.table.filters.status || ''
         }
-
-        // Clean empty parameters
-        Object.keys(params).forEach(key => {
-          if (params[key] === '' || params[key] === null || params[key] === undefined) {
-            delete params[key]
-          }
-        })
         
-        const response = await api.get('/suppliers', { params })
+        const response = await supplierService.getSuppliers(params)
         
-        if (response.data.success) {
-          const data = response.data?.data
-          const meta = response.data?.meta || {}
-          
+        if (response && response.data) {
+          const { data, meta = {} } = response
           this.suppliers = data || []
-          
           // Update pagination with server response
           this.table.pagination = {
             ...this.table.pagination,
@@ -111,12 +101,12 @@ export const useSuppliersStore = defineStore('suppliers', {
             rowsPerPage: meta.per_page || 15,
             rowsNumber: meta.total || 0,
             sortBy: pagination.sortBy || this.table.pagination.sortBy || 'name',
-            descending: pagination.descending !== undefined ? pagination.descending : this.table.pagination.descending
+            descending: pagination.descending !== undefined ? pagination.descending : (this.table.pagination.descending || false)
           }
           
           return true
         } else {
-          throw new Error(response.data.message || 'Failed to fetch suppliers')
+          throw new Error('Failed to fetch suppliers')
         }
       } catch (error) {
         console.error('Fetch suppliers error:', error)
@@ -139,7 +129,7 @@ export const useSuppliersStore = defineStore('suppliers', {
     async fetchSupplier(id) {
       this.isLoading = true
       try {
-        const response = await api.get(`/suppliers/${id}`)
+        const response = await supplierService.getSupplier(id)
         
         if (response.data.success) {
           this.supplier = response.data.data
@@ -168,7 +158,7 @@ export const useSuppliersStore = defineStore('suppliers', {
     async createSupplier(supplierData) {
       this.isSubmitting = true
       try {
-        const response = await api.post('/suppliers', supplierData)
+        const response = await supplierService.createSupplier(supplierData)
         
         if (response.data.success) {
           // Add to local state if not using server-side pagination
@@ -211,7 +201,7 @@ export const useSuppliersStore = defineStore('suppliers', {
     async updateSupplier(id, supplierData) {
       this.isSubmitting = true
       try {
-        const response = await api.put(`/suppliers/${id}`, supplierData)
+        const response = await supplierService.updateSupplier(id, supplierData)
         
         if (response.data.success) {
           // Update local state
@@ -259,7 +249,7 @@ export const useSuppliersStore = defineStore('suppliers', {
     async deleteSupplier(id) {
       this.isLoading = true
       try {
-        const response = await api.delete(`/suppliers/${id}`)
+        const response = await supplierService.deleteSupplier(id)
         
         if (response.data.success) {
           // Remove from local state
@@ -302,10 +292,13 @@ export const useSuppliersStore = defineStore('suppliers', {
      */
     async fetchSupplierOptions() {
       try {
-        const response = await api.get('/suppliers/options')
+        const response = await supplierService.getSuppliers({ status: 'active', per_page: 1000 })
         
-        if (response.data.success) {
-          this.supplierOptions = response.data.data || []
+        if (response && response.data) {
+          this.supplierOptions = response.data.map(supplier => ({
+            label: supplier.name,
+            value: supplier.id
+          }))
           return true
         } else {
           this.supplierOptions = this.getActiveSuppliers.map(supplier => ({

@@ -8,8 +8,10 @@ class Warehouse extends Model
 {
     protected $fillable = [
         'name',
-        'location',
-        'description',
+        'code',
+        'address',
+        'phone',
+        'manager_name',
         'status',
     ];
 

@@ -49,7 +49,7 @@ class UserFilterTest extends TestCase
 
     public function test_can_filter_users_by_role()
     {
-        $response = $this->getJson('/api/v1/users?role=admin');
+        $response = $this->getJson('/api/v1/management/users?role=admin');
         
         $response->assertStatus(200)
                 ->assertJsonStructure([
@@ -72,7 +72,7 @@ class UserFilterTest extends TestCase
     
     public function test_can_filter_users_by_status()
     {
-        $response = $this->getJson('/api/v1/users?status=false');
+        $response = $this->getJson('/api/v1/management/users?status=false');
         
         $response->assertStatus(200);
         $users = $response->json('data');
@@ -82,7 +82,7 @@ class UserFilterTest extends TestCase
     
     public function test_can_search_users()
     {
-        $response = $this->getJson('/api/v1/users?search=Admin');
+        $response = $this->getJson('/api/v1/management/users?search=Admin');
         
         $response->assertStatus(200);
         $users = $response->json('data');
@@ -92,7 +92,7 @@ class UserFilterTest extends TestCase
     
     public function test_can_sort_users()
     {
-        $response = $this->getJson('/api/v1/users?sort_by=name&sort_order=asc');
+        $response = $this->getJson('/api/v1/management/users?sort_by=name&sort_order=asc');
         
         $response->assertStatus(200);
         $users = $response->json('data');
@@ -104,7 +104,7 @@ class UserFilterTest extends TestCase
     
     public function test_validates_invalid_role_filter()
     {
-        $response = $this->getJson('/api/v1/users?role=nonexistent');
+        $response = $this->getJson('/api/v1/management/users?role=nonexistent');
         
         $response->assertStatus(422)
                 ->assertJsonValidationErrors(['role']);
@@ -112,7 +112,7 @@ class UserFilterTest extends TestCase
     
     public function test_validates_invalid_sort_column()
     {
-        $response = $this->getJson('/api/v1/users?sort_by=invalid_column');
+        $response = $this->getJson('/api/v1/management/users?sort_by=invalid_column');
         
         $response->assertStatus(422)
                 ->assertJsonValidationErrors(['sort_by']);
@@ -120,7 +120,7 @@ class UserFilterTest extends TestCase
     
     public function test_validates_invalid_sort_order()
     {
-        $response = $this->getJson('/api/v1/users?sort_order=invalid');
+        $response = $this->getJson('/api/v1/management/users?sort_order=invalid');
         
         $response->assertStatus(422)
                 ->assertJsonValidationErrors(['sort_order']);
@@ -128,7 +128,7 @@ class UserFilterTest extends TestCase
     
     public function test_pagination_works_correctly()
     {
-        $response = $this->getJson('/api/v1/users?per_page=2&page=1');
+        $response = $this->getJson('/api/v1/management/users?per_page=2&page=1');
         
         $response->assertStatus(200);
         $meta = $response->json('meta');

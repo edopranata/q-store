@@ -53,7 +53,7 @@
         :rows="suppliers"
         :columns="columns"
         :loading="loading"
-        :pagination="pagination"
+        v-model:pagination="pagination"
         @request="onRequest"
         row-key="id"
         binary-state-sort
@@ -114,23 +114,12 @@
 
         <q-card-section>
           <q-form @submit="saveSupplier" class="q-gutter-md">
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-input
-                  v-model="supplierForm.name"
-                  label="Nama Supplier *"
-                  outlined
-                  :rules="[val => !!val || 'Nama supplier wajib diisi']"
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="supplierForm.code"
-                  label="Kode Supplier"
-                  outlined
-                />
-              </div>
-            </div>
+            <q-input
+              v-model="supplierForm.name"
+              label="Nama Supplier *"
+              outlined
+              :rules="[val => !!val || 'Nama supplier wajib diisi']"
+            />
 
             <div class="row q-col-gutter-md">
               <div class="col">
@@ -157,36 +146,11 @@
             />
 
             <q-input
-                v-model="supplierForm.address"
+              v-model="supplierForm.address"
               label="Alamat"
               outlined
               type="textarea"
               rows="3"
-            />
-
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-input
-                  v-model="supplierForm.city"
-                  label="Kota"
-                  outlined
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="supplierForm.postal_code"
-                  label="Kode Pos"
-                  outlined
-                />
-              </div>
-            </div>
-
-            <q-input
-                v-model="supplierForm.notes"
-              label="Catatan"
-              outlined
-              type="textarea"
-              rows="2"
             />
 
             <q-select
@@ -224,14 +188,10 @@
         <q-card-section v-if="selectedSupplier">
           <div class="q-gutter-sm">
             <div><strong>Nama:</strong> {{ selectedSupplier.name }}</div>
-            <div v-if="selectedSupplier.code"><strong>Kode:</strong> {{ selectedSupplier.code }}</div>
             <div v-if="selectedSupplier.contact_person"><strong>Kontak:</strong> {{ selectedSupplier.contact_person }}</div>
             <div v-if="selectedSupplier.phone"><strong>Telepon:</strong> {{ selectedSupplier.phone }}</div>
             <div v-if="selectedSupplier.email"><strong>Email:</strong> {{ selectedSupplier.email }}</div>
             <div v-if="selectedSupplier.address"><strong>Alamat:</strong> {{ selectedSupplier.address }}</div>
-            <div v-if="selectedSupplier.city"><strong>Kota:</strong> {{ selectedSupplier.city }}</div>
-            <div v-if="selectedSupplier.postal_code"><strong>Kode Pos:</strong> {{ selectedSupplier.postal_code }}</div>
-            <div v-if="selectedSupplier.notes"><strong>Catatan:</strong> {{ selectedSupplier.notes }}</div>
             <div>
               <strong>Status:</strong>
               <q-badge
@@ -269,14 +229,10 @@ const searchTimeout = ref(null)
 const supplierForm = ref({
   id: null,
   name: '',
-  code: '',
   contact_person: '',
   phone: '',
   email: '',
   address: '',
-  city: '',
-  postal_code: '',
-  notes: '',
   status: 'active'
 })
 
@@ -296,12 +252,7 @@ const columns = [
     field: 'name',
     sortable: true
   },
-  {
-    name: 'code',
-    label: 'Kode',
-    align: 'center',
-    field: 'code'
-  },
+
   {
     name: 'contact_person',
     label: 'Kontak',
@@ -314,12 +265,7 @@ const columns = [
     align: 'left',
     field: 'phone'
   },
-  {
-    name: 'city',
-    label: 'Kota',
-    align: 'left',
-    field: 'city'
-  },
+
   {
     name: 'status',
     label: 'Status',
@@ -345,6 +291,7 @@ const columns = [
 // Computed
 const suppliers = computed(() => suppliersStore.all || [])
 const pagination = computed(() => suppliersStore.pagination)
+
 const filters = computed({
   get: () => suppliersStore.getFilters,
   set: (value) => suppliersStore.setFilters(value)
@@ -381,14 +328,10 @@ const addSupplier = () => {
   Object.assign(supplierForm.value, {
     id: null,
     name: '',
-    code: '',
     contact_person: '',
     phone: '',
     email: '',
     address: '',
-    city: '',
-    postal_code: '',
-    notes: '',
     status: 'active'
   })
   showAddDialog.value = true
@@ -451,14 +394,10 @@ const closeDialog = () => {
   Object.assign(supplierForm.value, {
     id: null,
     name: '',
-    code: '',
     contact_person: '',
     phone: '',
     email: '',
     address: '',
-    city: '',
-    postal_code: '',
-    notes: '',
     status: 'active'
   })
 }

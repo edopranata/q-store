@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\ProductUnitController;
 use App\Http\Controllers\Api\ProductPriceController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\WarehouseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +73,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/categories', [CategoryController::class, 'options'])->name('api.v1.option.categories');
             Route::get('/units', [UnitController::class, 'options'])->name('api.v1.option.units');
             Route::get('/roles', [RoleController::class, 'options'])->name('api.v1.roles.options');
+            Route::get('/suppliers', [SupplierController::class, 'options'])->name('api.v1.option.suppliers');
+            Route::get('/customers', [CustomerController::class, 'options'])->name('api.v1.option.customers');
+            Route::get('/warehouses', [WarehouseController::class, 'options'])->name('api.v1.option.warehouses');
         });
         
         // =============================================================================
@@ -91,13 +97,50 @@ Route::prefix('v1')->group(function () {
                     'destroy' => 'api.v1.master.categories.destroy',
                 ]);
             
-            // Units
+                // Units
                 Route::apiResource('units', UnitController::class)->names([
                     'index' => 'api.v1.master.units.index',
                     'store' => 'api.v1.master.units.store',
                     'show' => 'api.v1.master.units.show',
                     'update' => 'api.v1.master.units.update',
                     'destroy' => 'api.v1.master.units.destroy',
+                ]);
+
+                // Suppliers
+                Route::get('/suppliers/search', [SupplierController::class, 'search'])->name('api.v1.master.suppliers.search');
+                Route::get('/suppliers/statistics', [SupplierController::class, 'statistics'])->name('api.v1.master.suppliers.statistics');
+                Route::patch('/suppliers/{supplier}/toggle-status', [SupplierController::class, 'toggleStatus'])->name('api.v1.master.suppliers.toggle-status');
+                Route::apiResource('suppliers', SupplierController::class)->names([
+                    'index' => 'api.v1.master.suppliers.index',
+                    'store' => 'api.v1.master.suppliers.store',
+                    'show' => 'api.v1.master.suppliers.show',
+                    'update' => 'api.v1.master.suppliers.update',
+                    'destroy' => 'api.v1.master.suppliers.destroy',
+                ]);
+
+                // Customers
+                Route::get('/customers/search', [CustomerController::class, 'search'])->name('api.v1.master.customers.search');
+                Route::get('/customers/statistics', [CustomerController::class, 'statistics'])->name('api.v1.master.customers.statistics');
+                Route::patch('/customers/{customer}/toggle-status', [CustomerController::class, 'toggleStatus'])->name('api.v1.master.customers.toggle-status');
+                Route::apiResource('customers', CustomerController::class)->names([
+                    'index' => 'api.v1.master.customers.index',
+                    'store' => 'api.v1.master.customers.store',
+                    'show' => 'api.v1.master.customers.show',
+                    'update' => 'api.v1.master.customers.update',
+                    'destroy' => 'api.v1.master.customers.destroy',
+                ]);
+
+                // Warehouses
+                Route::get('/warehouses/search', [WarehouseController::class, 'search'])->name('api.v1.master.warehouses.search');
+                Route::get('/warehouses/statistics', [WarehouseController::class, 'statistics'])->name('api.v1.master.warehouses.statistics');
+                Route::get('/warehouses/generate-code', [WarehouseController::class, 'generateCode'])->name('api.v1.master.warehouses.generate-code');
+                Route::patch('/warehouses/{warehouse}/toggle-status', [WarehouseController::class, 'toggleStatus'])->name('api.v1.master.warehouses.toggle-status');
+                Route::apiResource('warehouses', WarehouseController::class)->names([
+                    'index' => 'api.v1.master.warehouses.index',
+                    'store' => 'api.v1.master.warehouses.store',
+                    'show' => 'api.v1.master.warehouses.show',
+                    'update' => 'api.v1.master.warehouses.update',
+                    'destroy' => 'api.v1.master.warehouses.destroy',
                 ]);
             });
             // =============================================================================

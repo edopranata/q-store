@@ -13,6 +13,12 @@ use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use App\Repositories\RoleRepository;
+use App\Repositories\Contracts\CustomerRepositoryInterface;
+use App\Repositories\CustomerRepository;
+use App\Repositories\Contracts\SupplierRepositoryInterface;
+use App\Repositories\SupplierRepository;
+use App\Repositories\Contracts\WarehouseRepositoryInterface;
+use App\Repositories\WarehouseRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -45,6 +51,21 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             RoleRepositoryInterface::class,
             RoleRepository::class
+        );
+        
+        $this->app->bind(
+            CustomerRepositoryInterface::class,
+            CustomerRepository::class
+        );
+        
+        $this->app->bind(
+            SupplierRepositoryInterface::class,
+            SupplierRepository::class
+        );
+        
+        $this->app->bind(
+            WarehouseRepositoryInterface::class,
+            WarehouseRepository::class
         );
     }
 

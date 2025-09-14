@@ -6,7 +6,7 @@ export const useCategoriesStore = defineStore('categories', {
   state: () => ({
     categories: [],
     category: null,
-    isLoading: false,
+    loading: false,
     isSubmitting: false,
     table: {
       pagination: {
@@ -28,7 +28,7 @@ export const useCategoriesStore = defineStore('categories', {
     getCategories: (state) => state.categories,
     getCategory: (state) => state.category,
     getCategoryOptions: (state) => state.categoryOptions,
-    loading: (state) => state.isLoading,
+    isLoading: (state) => state.loading,
     submitting: (state) => state.isSubmitting,
     pagination: (state) => state.table.pagination,
     getFilters: (state) => state.table.filters,
@@ -60,7 +60,7 @@ export const useCategoriesStore = defineStore('categories', {
      * @returns {Promise<boolean>} Success status
      */
     async fetchCategories(props = {}) {
-      this.isLoading = true
+      this.loading = true
       try {
         // Initialize pagination if not exists
         if (!this.table.pagination) {
@@ -115,7 +115,7 @@ export const useCategoriesStore = defineStore('categories', {
         })
         return false
       } finally {
-        this.isLoading = false
+        this.loading = false
       }
     },
 
@@ -125,7 +125,7 @@ export const useCategoriesStore = defineStore('categories', {
      * @returns {Promise<boolean>} Success status
      */
     async fetchCategory(id) {
-      this.isLoading = true
+      this.loading = true
       try {
         const response = await categoryService.getCategory(id)
         
@@ -144,7 +144,7 @@ export const useCategoriesStore = defineStore('categories', {
         })
         return false
       } finally {
-        this.isLoading = false
+        this.loading = false
       }
     },
 

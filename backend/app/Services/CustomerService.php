@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 
-class CustomerServiceService
+class CustomerService
 {
     protected CustomerRepositoryInterface $customerRepository;
 
@@ -28,9 +28,9 @@ class CustomerServiceService
     /**
      * Get paginated Customers with filters.
      */
-    public function getPaginatedCustomers(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator
+    public function getPaginatedCustomers(array $filters = [], array $with = [], array $withCount = [], int $perPage = 15, string $sortBy = 'id', string $sortOrder = 'desc'): LengthAwarePaginator
     {
-        return $this->customerRepository->getPaginated($filters, $with, $perPage);
+        return $this->customerRepository->getPaginated($filters, $with, $withCount, $perPage, $sortBy, $sortOrder);
     }
 
     /**
@@ -154,5 +154,21 @@ class CustomerServiceService
     public function getActiveCustomers(array $with = []): Collection
     {
         return $this->customerRepository->getActiveCustomers($with);
+    }
+
+    /**
+     * Toggle Customer status.
+     */
+    public function toggleCustomerStatus(int $id): Customer
+    {
+        $customer = $this->getCustomerById($id);
+        
+        if (!$customer) {
+            throw new \Exception('Customer not found');
+        }
+
+        $newStatus = $customer->status === 'active' ? 'inactive' : 'active';
+        
+        return $this->customerRepository->update($customer, ['status' => $newStatus]);
     }
 }

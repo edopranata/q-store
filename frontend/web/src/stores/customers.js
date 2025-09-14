@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { api } from 'src/boot/axios'
+import { customerService } from 'src/services/customerService'
+import { Notify } from 'quasar'
 
 export const useCustomersStore = defineStore('customers', {
   state: () => ({
@@ -9,7 +10,7 @@ export const useCustomersStore = defineStore('customers', {
         sortBy: 'id',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 15,
         rowsNumber: 0
       },
       filters: {
@@ -28,53 +29,88 @@ export const useCustomersStore = defineStore('customers', {
     getFilters: (state) => state.table.filters,
     isLoading: (state) => state.loading,
     getError: (state) => state.error,
-    getIsSubmitting: (state) => state.isSubmitting
+    getIsSubmitting: (state) => state.isSubmitting,
+    getActiveCustomers: (state) => state.customers.filter(customer => customer.status === 'active'),
+    getCustomerById: (state) => (id) => state.customers.find(customer => customer.id === id),
+    filteredCustomers: (state) => {
+      let filtered = state.customers || []
+      
+      if (state.table.filters.search) {
+        const search = state.table.filters.search.toLowerCase()
+        filtered = filtered.filter(customer =>
+          customer.name?.toLowerCase().includes(search) ||
+          customer.email?.toLowerCase().includes(search) ||
+          customer.phone?.toLowerCase().includes(search) ||
+          customer.address?.toLowerCase().includes(search)
+        )
+      }
+      
+      if (state.table.filters.status) {
+        filtered = filtered.filter(customer => customer.status === state.table.filters.status)
+      }
+      
+      return filtered
+    }
   },
 
   actions: {
     async fetchCustomers(props = {}) {
-      this.loading = true
-      this.error = null
-      
+      this.isLoading = true
       try {
-        // Extract pagination and filters from props
-        const { pagination = this.table.pagination, filters = this.table.filters } = props
+        // Initialize pagination if not exists
+        if (!this.table.pagination) {
+          this.table.pagination = {
+            sortBy: 'name',
+            descending: false,
+            page: 1,
+            rowsPerPage: 15,
+            rowsNumber: 0
+          }
+        }
         
-        // Build API params
+        // Extract pagination and filter from props
+        const pagination = props.pagination || this.table.pagination
+        const filter = props.filter !== undefined ? props.filter : this.table.filters.search
+        
+        // Build pagination parameters
+        const paginationParams = customerService.buildPaginationParams(pagination)
+        
+        // Build API parameters
         const params = {
-          page: pagination.page,
-          per_page: pagination.rowsPerPage,
-          sort_by: pagination.sortBy,
-          sort_order: pagination.descending ? 'desc' : 'asc'
+          ...paginationParams,
+          search: filter || '',
+          status: this.table.filters.status || ''
         }
         
-        // Add filters if they exist
-        if (filters.search) {
-          params.search = filters.search
+        const response = await customerService.getCustomers(params)
+        
+        if (response && response.data) {
+          const { data, meta = {} } = response
+          this.customers = data || []
+          // Update pagination with server response
+          this.table.pagination = {
+            ...this.table.pagination,
+            page: meta.current_page || 1,
+            rowsPerPage: meta.per_page || 15,
+            rowsNumber: meta.total || 0,
+            sortBy: pagination.sortBy || this.table.pagination.sortBy || 'name',
+            descending: pagination.descending !== undefined ? pagination.descending : (this.table.pagination.descending || false)
+          }
+          
+          return true
+        } else {
+          throw new Error('Failed to fetch suppliers')
         }
-        
-        if (filters.status) {
-          params.status = filters.status
-        }
-        
-        const response = await api.get('/customers', { params })
-        
-        this.customers = response.data.data
-        
-        // Update pagination with response data
-        this.table.pagination = {
-          ...pagination,
-          rowsNumber: response.data.total,
-          page: response.data.current_page,
-          rowsPerPage: response.data.per_page
-        }
-        
-        return response.data
       } catch (error) {
-        this.error = error.response?.data?.message || 'Gagal memuat data customer'
-        throw error
+        console.error('Fetch suppliers error:', error)
+        Notify.create({
+          type: 'negative',
+          message: error.response?.data?.message || 'Gagal memuat data supplier',
+          position: 'top'
+        })
+        return false
       } finally {
-        this.loading = false
+        this.isLoading = false
       }
     },
 
@@ -83,10 +119,16 @@ export const useCustomersStore = defineStore('customers', {
       this.error = null
       
       try {
-        const response = await api.post('/customers', customerData)
+        const response = await customerService.createCustomer(customerData)
         return response.data
       } catch (error) {
+        console.error('Create customer error:', error)
         this.error = error.response?.data?.message || 'Gagal menambahkan customer'
+        Notify.create({
+          type: 'negative',
+          message: error.response?.data?.message || 'Gagal menambahkan customer',
+          position: 'top'
+        })
         throw error
       } finally {
         this.isSubmitting = false
@@ -98,10 +140,16 @@ export const useCustomersStore = defineStore('customers', {
       this.error = null
       
       try {
-        const response = await api.put(`/customers/${id}`, customerData)
+        const response = await customerService.updateCustomer(id, customerData)
         return response.data
       } catch (error) {
+        console.error('Update customer error:', error)
         this.error = error.response?.data?.message || 'Gagal memperbarui customer'
+        Notify.create({
+          type: 'negative',
+          message: error.response?.data?.message || 'Gagal memperbarui customer',
+          position: 'top'
+        })
         throw error
       } finally {
         this.isSubmitting = false
@@ -113,10 +161,16 @@ export const useCustomersStore = defineStore('customers', {
       this.error = null
       
       try {
-        await api.delete(`/customers/${id}`)
+        await customerService.deleteCustomer(id)
         return true
       } catch (error) {
+        console.error('Delete customer error:', error)
         this.error = error.response?.data?.message || 'Gagal menghapus customer'
+        Notify.create({
+          type: 'negative',
+          message: error.response?.data?.message || 'Gagal menghapus customer',
+          position: 'top'
+        })
         throw error
       } finally {
         this.isSubmitting = false
@@ -143,9 +197,29 @@ export const useCustomersStore = defineStore('customers', {
         sortBy: 'id',
         descending: false,
         page: 1,
-        rowsPerPage: 10,
+        rowsPerPage: 15,
         rowsNumber: 0
       }
+    },
+
+    /**
+     * Search customers by term
+     * @param {string} searchTerm - Search term
+     */
+    async searchCustomers(searchTerm) {
+      this.table.filters.search = searchTerm
+      this.resetPagination()
+      await this.fetchCustomers()
+    },
+
+    /**
+     * Filter customers by status
+     * @param {string} status - Status filter
+     */
+    async filterByStatus(status) {
+      this.table.filters.status = status
+      this.resetPagination()
+      await this.fetchCustomers()
     }
   }
 })

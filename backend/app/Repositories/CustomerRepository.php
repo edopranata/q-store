@@ -96,7 +96,7 @@ class CustomerRepository implements CustomerRepositoryInterface
      *     'with_count' => ['orders', 'reviews']
      * ], ['category', 'user'], 20);
      */
-    public function getPaginated(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator
+    public function getPaginated(array $filters = [], array $with = [], array $withCount = [], int $perPage = 15, string $sortBy = 'name', string $sortOrder = 'asc'): LengthAwarePaginator
     {
         $query = $this->model->newQuery();
 
@@ -106,20 +106,18 @@ class CustomerRepository implements CustomerRepositoryInterface
         }
 
         // Apply relationship counting for performance optimization
-        if (isset($filters['with_count']) && !empty($filters['with_count'])) {
-            $query->withCount($filters['with_count']);
+        if (!empty($withCount)) {
+            $query->withCount($withCount);
         }
 
         // Apply dynamic filters
         $this->applyFilters($query, $filters);
 
         // Apply secure sorting with validation
-        $allowedSortFields = ['id', 'name', 'status', 'created_at', 'updated_at'];
-        $sortBy = $filters['sort_by'] ?? 'name';
-        $sortOrder = strtolower($filters['sort_order'] ?? 'asc');
+        $allowedSortFields = ['id', 'name', 'phone', 'email', 'status', 'created_at', 'updated_at'];
         
         // Validate sort order
-        $sortOrder = in_array($sortOrder, ['asc', 'desc']) ? $sortOrder : 'asc';
+        $sortOrder = in_array(strtolower($sortOrder), ['asc', 'desc']) ? strtolower($sortOrder) : 'asc';
 
         // Apply sorting with field validation
         if (in_array($sortBy, $allowedSortFields)) {
@@ -312,8 +310,9 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         $queryBuilder->where(function ($q) use ($query) {
             $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('description', 'LIKE', "%{$query}%");
-            // Add more searchable fields as needed
+              ->orWhere('phone', 'LIKE', "%{$query}%")
+              ->orWhere('email', 'LIKE', "%{$query}%")
+              ->orWhere('address', 'LIKE', "%{$query}%");
         });
 
         return $queryBuilder->paginate($perPage);

@@ -49,18 +49,7 @@
 
     <!-- Data Table -->
     <q-card class="theme-bg-card theme-border-light theme-radius-lg theme-shadow-medium">
-      <!-- <q-table
-      ref="tableRef"
-      :rows="categories"
-      :columns="columns"
-      :loading="loading"
-      v-model:pagination="pagination"
-      :filter="filter"
-      row-key="id"
-      @request="onRequest"
-      binary-state-sort
-      class="categories-table"
-    > -->
+
       <q-table
         :rows="categories"
         :columns="columns"
@@ -231,7 +220,7 @@ const columns = [
 ]
 
 // Computed
-const categories = computed(() => categoriesStore.getCategories || [])
+const categories = computed(() => categoriesStore.categories || [])
 const pagination = computed(() => categoriesStore.pagination)
 const filters = computed({
   get: () => categoriesStore.getFilters,

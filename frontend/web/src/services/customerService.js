@@ -12,7 +12,9 @@ export const customerService = {
    */
   async getCustomers(params = {}) {
     try {
-      const response = await api.get('/master/customers', { params })
+      // Clean empty parameters
+      const cleanParams = this.cleanParams(params)
+      const response = await api.get('/master/customers', { params: cleanParams })
       return response.data
     } catch (error) {
       throw this.handleError(error)
@@ -73,6 +75,35 @@ export const customerService = {
       return response.data
     } catch (error) {
       throw this.handleError(error)
+    }
+  },
+
+  /**
+   * Clean empty parameters
+   * @param {Object} params - Parameters to clean
+   * @returns {Object} Cleaned parameters
+   */
+  cleanParams(params) {
+    const cleaned = {}
+    Object.keys(params).forEach(key => {
+      if (params[key] !== '' && params[key] !== null && params[key] !== undefined) {
+        cleaned[key] = params[key]
+      }
+    })
+    return cleaned
+  },
+
+  /**
+   * Build pagination parameters
+   * @param {Object} pagination - Pagination object
+   * @returns {Object} API-ready pagination parameters
+   */
+  buildPaginationParams(pagination = {}) {
+    return {
+      page: pagination.page || 1,
+      per_page: pagination.rowsPerPage || 15,
+      sort_by: pagination.sortBy || 'name',
+      sort_order: pagination.descending ? 'desc' : 'asc'
     }
   },
 

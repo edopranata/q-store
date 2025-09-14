@@ -34,9 +34,9 @@ class ProductService
     /**
      * Get paginated products.
      */
-    public function getPaginatedProducts(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator
+    public function getPaginatedProducts(array $filters = [], array $with = [], int $perPage = 15, array $withCount = [], string $sortBy = 'created_at', string $sortOrder = 'desc'): LengthAwarePaginator
     {
-        return $this->productRepository->getPaginated($filters, $with, $perPage);
+        return $this->productRepository->getPaginated($filters, $with, $perPage, $withCount, $sortBy, $sortOrder);
     }
 
     /**

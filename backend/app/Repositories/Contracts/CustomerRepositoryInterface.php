@@ -16,7 +16,7 @@ interface CustomerRepositoryInterface
     /**
      * Get paginated Customers.
      */
-    public function getPaginated(array $filters = [], array $with = [], int $perPage = 15): LengthAwarePaginator;
+    public function getPaginated(array $filters = [], array $with = [], array $withCount = [], int $perPage = 15, string $sortBy = 'name', string $sortOrder = 'asc'): LengthAwarePaginator;
 
     /**
      * Find Customer by ID.

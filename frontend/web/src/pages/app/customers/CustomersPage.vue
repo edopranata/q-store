@@ -31,18 +31,7 @@
               </template>
             </q-input>
           </div>
-          <div class="col-md-3 col-sm-6 col-xs-12">
-            <q-select
-                v-model="filters.type"
-                :options="typeOptions"
-                label="Tipe Customer"
-                outlined
-                dense
-                clearable
-                emit-value
-                map-options
-              />
-          </div>
+
           <div class="col-md-3 col-sm-6 col-xs-12">
             <q-select
                 v-model="filters.status"
@@ -64,21 +53,14 @@
       <q-table
           :rows="customers"
           :columns="columns"
-          :loading="customersStore.isLoading"
-          :pagination="pagination"
+          :loading="customersStore.getIsLoading"
+          v-model:pagination="pagination"
           @request="onRequest"
           row-key="id"
           class="customers-table"
           server-side-pagination
         >
-        <template v-slot:body-cell-type="props">
-          <q-td :props="props">
-            <q-badge
-              :color="props.row.type === 'individual' ? 'blue' : 'purple'"
-              :label="props.row.type === 'individual' ? 'Individu' : 'Perusahaan'"
-            />
-          </q-td>
-        </template>
+
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
@@ -136,27 +118,6 @@
 
         <q-card-section>
           <q-form @submit="saveCustomer" class="q-gutter-md">
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-select
-                  v-model="customerForm.type"
-                  :options="typeOptions"
-                  label="Tipe Customer *"
-                  outlined
-                  emit-value
-                  map-options
-                  :rules="[val => !!val || 'Tipe customer wajib dipilih']"
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="customerForm.code"
-                  label="Kode Customer"
-                  outlined
-                />
-              </div>
-            </div>
-
             <q-input
               v-model="customerForm.name"
               label="Nama Customer *"
@@ -190,48 +151,6 @@
               rows="3"
             />
 
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-input
-                  v-model="customerForm.city"
-                  label="Kota"
-                  outlined
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="customerForm.postal_code"
-                  label="Kode Pos"
-                  outlined
-                />
-              </div>
-            </div>
-
-            <div class="row q-col-gutter-md" v-if="customerForm.type === 'company'">
-              <div class="col">
-                <q-input
-                  v-model="customerForm.company_name"
-                  label="Nama Perusahaan"
-                  outlined
-                />
-              </div>
-              <div class="col">
-                <q-input
-                  v-model="customerForm.tax_number"
-                  label="NPWP"
-                  outlined
-                />
-              </div>
-            </div>
-
-            <q-input
-              v-model="customerForm.notes"
-              label="Catatan"
-              outlined
-              type="textarea"
-              rows="2"
-            />
-
             <q-select
               v-model="customerForm.status"
               :options="statusOptions"
@@ -250,7 +169,7 @@
             color="primary"
             label="Simpan"
             @click="saveCustomer"
-            :loading="customersStore.isSaving"
+            :loading="customersStore.getIsSubmitting"
             class="theme-radius-md theme-font-sm"
           />
         </q-card-actions>
@@ -266,24 +185,10 @@
 
         <q-card-section v-if="selectedCustomer">
           <div class="q-gutter-sm">
-            <div>
-              <strong>Tipe:</strong>
-              <q-badge
-                :color="selectedCustomer.type === 'individual' ? 'blue' : 'purple'"
-                :label="selectedCustomer.type === 'individual' ? 'Individu' : 'Perusahaan'"
-                class="q-ml-sm"
-              />
-            </div>
             <div><strong>Nama:</strong> {{ selectedCustomer.name }}</div>
-            <div v-if="selectedCustomer.code"><strong>Kode:</strong> {{ selectedCustomer.code }}</div>
             <div v-if="selectedCustomer.phone"><strong>Telepon:</strong> {{ selectedCustomer.phone }}</div>
             <div v-if="selectedCustomer.email"><strong>Email:</strong> {{ selectedCustomer.email }}</div>
             <div v-if="selectedCustomer.address"><strong>Alamat:</strong> {{ selectedCustomer.address }}</div>
-            <div v-if="selectedCustomer.city"><strong>Kota:</strong> {{ selectedCustomer.city }}</div>
-            <div v-if="selectedCustomer.postal_code"><strong>Kode Pos:</strong> {{ selectedCustomer.postal_code }}</div>
-            <div v-if="selectedCustomer.company_name"><strong>Perusahaan:</strong> {{ selectedCustomer.company_name }}</div>
-            <div v-if="selectedCustomer.tax_number"><strong>NPWP:</strong> {{ selectedCustomer.tax_number }}</div>
-            <div v-if="selectedCustomer.notes"><strong>Catatan:</strong> {{ selectedCustomer.notes }}</div>
             <div>
               <strong>Status:</strong>
               <q-badge
@@ -322,26 +227,14 @@ const searchTimeout = ref(null)
 
 const customerForm = ref({
   id: null,
-  type: 'individual',
   name: '',
-  code: '',
   phone: '',
   email: '',
   address: '',
-  city: '',
-  postal_code: '',
-  company_name: '',
-  tax_number: '',
-  notes: '',
   status: 'active'
 })
 
 // Options
-const typeOptions = [
-  { label: 'Individu', value: 'individual' },
-  { label: 'Perusahaan', value: 'company' }
-]
-
 const statusOptions = [
   { label: 'Aktif', value: 'active' },
   { label: 'Tidak Aktif', value: 'inactive' }
@@ -357,19 +250,7 @@ const columns = [
     field: 'name',
     sortable: true
   },
-  {
-    name: 'code',
-    label: 'Kode',
-    align: 'center',
-    field: 'code'
-  },
-  {
-    name: 'type',
-    label: 'Tipe',
-    align: 'center',
-    field: 'type',
-    sortable: true
-  },
+
   {
     name: 'phone',
     label: 'Telepon',
@@ -382,12 +263,7 @@ const columns = [
     align: 'left',
     field: 'email'
   },
-  {
-    name: 'city',
-    label: 'Kota',
-    align: 'left',
-    field: 'city'
-  },
+
   {
     name: 'status',
     label: 'Status',
@@ -412,8 +288,16 @@ const columns = [
 
 // Computed
 const customers = computed(() => customersStore.getCustomers || [])
-const pagination = computed(() => customersStore.getPagination)
-const filters = computed(() => customersStore.getFilters)
+
+const pagination = computed({
+  get: () => customersStore.getPagination,
+  set: (value) => customersStore.setPagination(value)
+})
+
+const filters = computed({
+  get: () => customersStore.getFilters,
+  set: (value) => customersStore.setFilters(value)
+})
 
 // Watchers
 watch(() => filters.value.search, () => {
@@ -425,9 +309,7 @@ watch(() => filters.value.search, () => {
   }, 500)
 })
 
-watch(() => filters.value.type, () => {
-  onRequest({ pagination: pagination.value })
-})
+
 
 watch(() => filters.value.status, () => {
   onRequest({ pagination: pagination.value })
@@ -500,17 +382,10 @@ const closeDialog = () => {
   editMode.value = false
   customerForm.value = {
     id: null,
-    type: 'individual',
     name: '',
-    code: '',
     phone: '',
     email: '',
     address: '',
-    city: '',
-    postal_code: '',
-    company_name: '',
-    tax_number: '',
-    notes: '',
     status: 'active'
   }
 }

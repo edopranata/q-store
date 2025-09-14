@@ -30,10 +30,13 @@ class ProductController extends Controller
             ]);
             
             $with = ['category', 'productUnits.unit'];
+            $withCount = $request->get('with_count', []);
+            $sortBy = $request->get('sort_by', 'created_at');
+            $sortOrder = $request->get('sort_order', 'desc');
             
             if ($request->boolean('paginate', true)) {
                 $perPage = $request->integer('per_page', 15);
-                $products = $this->productService->getPaginatedProducts($filters, $with, $perPage);
+                $products = $this->productService->getPaginatedProducts($filters, $with, $perPage, $withCount, $sortBy, $sortOrder);
             } else {
                 $products = $this->productService->getAllProducts($filters, $with);
             }

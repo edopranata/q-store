@@ -55,10 +55,6 @@ export const useUnitsStore = defineStore('units', {
   },
 
   actions: {
-
-
-
-
     /**
      * Fetch units with server-side pagination and filters
      * @param {Object} props - Request props from q-table
