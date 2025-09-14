@@ -9,18 +9,29 @@ Membuat Service class lengkap dengan Repository Interface dan Repository impleme
 
 **Syntax:**
 ```bash
-php artisan make:service {ServiceName}
+php artisan make:service {ModelName}
 ```
 
 **Contoh:**
 ```bash
+# Menggunakan nama model (tanpa suffix 'Service')
+php artisan make:service Product
+
+# Atau dengan suffix 'Service' (akan otomatis diproses)
 php artisan make:service ProductService
 ```
 
 **Output:**
-- `app/Services/ProductService.php`
+- `app/Services/ProductService.php` (format: [ModelName]Service.php)
 - `app/Repositories/Contracts/ProductRepositoryInterface.php`
 - `app/Repositories/ProductRepository.php`
+
+**Fitur Penamaan Otomatis:**
+- ✅ Input `Product` → menghasilkan `ProductService.php`
+- ✅ Input `ProductService` → menghasilkan `ProductService.php` (tidak duplikasi)
+- ✅ Input `SalesTransaction` → menghasilkan `SalesTransactionService.php`
+- ✅ Validasi model otomatis (model harus ada di `app/Models/`)
+- ✅ Format nama file konsisten: `[ModelName]Service.php`
 
 ### 2. `make:repository-interface`
 Membuat Repository Interface saja.
@@ -173,7 +184,13 @@ Template files tersimpan di:
 
 ```bash
 # Generate ProductService dengan repository interface dan implementation
+# Menggunakan nama model (recommended)
+php artisan make:service Product
+
+# Atau menggunakan nama dengan suffix Service (juga valid)
 php artisan make:service ProductService
+
+# Keduanya menghasilkan output yang sama
 ```
 
 **Hasil:**
@@ -241,6 +258,9 @@ public function register(): void
 
 ### 1. Naming Conventions
 - **Service:** `{Model}Service` (e.g., `ProductService`)
+  - File: `[ModelName]Service.php` (otomatis ditambahkan suffix 'Service')
+  - Class: `{Model}Service`
+  - Input command: bisa `Product` atau `ProductService` (keduanya menghasilkan output yang sama)
 - **Repository Interface:** `{Model}RepositoryInterface` (e.g., `ProductRepositoryInterface`)
 - **Repository:** `{Model}Repository` (e.g., `ProductRepository`)
 
@@ -310,7 +330,17 @@ php artisan cache:clear
 ### File sudah ada
 ```bash
 # Gunakan flag --force untuk overwrite
+php artisan make:service Product --force
+# atau
 php artisan make:service ProductService --force
+```
+
+### Model tidak ditemukan
+```bash
+# Pastikan model sudah ada di app/Models/
+# Command akan menampilkan daftar model yang tersedia jika model tidak ditemukan
+php artisan make:service NonExistentModel
+# Output: Model 'NonExistentModel' not found. Available models: Product, Category, User...
 ```
 
 ### Namespace issues
