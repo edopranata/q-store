@@ -1,5 +1,5 @@
 <template>
-  <q-page class="home-page theme-bg-primary">
+  <q-page class="home-page theme-bg-primary q-pb-xl">
     <!-- Hero Section -->
     <section class="hero-section theme-bg-gradient">
       <div class="container">

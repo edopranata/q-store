@@ -125,7 +125,7 @@ const onThemeChanged = (event) => {
 }
 
 .public-footer {
-  background: var(--theme-bg-dark);
+  background: linear-gradient(135deg, $primary 0%, color.adjust($primary, $lightness: -10%) 100%);
   transition: all 0.3s ease;
   
   :deep(.q-toolbar) {
