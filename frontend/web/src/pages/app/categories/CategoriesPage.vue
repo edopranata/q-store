@@ -220,8 +220,8 @@ const columns = [
 ]
 
 // Computed
-const categories = computed(() => categoriesStore.categories || [])
-const pagination = computed(() => categoriesStore.pagination)
+const categories = computed(() => categoriesStore.getCategories || [])
+const pagination = computed(() => categoriesStore.table.pagination)
 const filters = computed({
   get: () => categoriesStore.getFilters,
   set: (value) => categoriesStore.setFilters(value)

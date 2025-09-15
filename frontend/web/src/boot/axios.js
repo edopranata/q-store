@@ -1,6 +1,7 @@
 import { defineBoot } from '#q-app/wrappers'
 import axios from 'axios'
 import { Notify, LocalStorage } from 'quasar'
+import { useAuthStore } from 'src/stores/auth'
 
 // API Configuration
 const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://127.0.0.1:8000/api/v1'
@@ -30,7 +31,8 @@ api.interceptors.request.use(
   }
 )
 
-export default defineBoot(({ app, router }) => {
+export default defineBoot(({ app, router, stores }) => {
+  const authStore = useAuthStore(stores)
   // Response interceptor with router access
   api.interceptors.response.use(
     (response) => {
@@ -43,10 +45,10 @@ export default defineBoot(({ app, router }) => {
       switch (status) {
         case 401:
           // Unauthorized - clear auth and redirect to login
-           LocalStorage.remove('auth_token')
-           LocalStorage.remove('auth_user')
-           LocalStorage.remove('auth_permissions')
-           delete api.defaults.headers.common['Authorization']
+          authStore.clearUser()
+
+          // Clear auth headers
+          delete api.defaults.headers.common['Authorization']
           
           Notify.create({
             type: 'negative',
@@ -56,13 +58,17 @@ export default defineBoot(({ app, router }) => {
           
           // Use router.push instead of window.location.href for better navigation
           if (router && router.currentRoute.value.name !== 'login') {
-            router.push({
-              name: 'login',
-              query: { 
-                redirect: router.currentRoute.value.fullPath,
-                reason: 'session_expired'
-              }
-            })
+            setTimeout(() => {
+              router.push({
+                name: 'login',
+                query: { 
+                  redirect: router.currentRoute.value.fullPath,
+                  reason: 'session_expired'
+                }
+              })
+            }, 1000);
+
+            return Promise.reject(error)
           }
           break
           

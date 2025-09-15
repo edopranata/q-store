@@ -1,23 +1,19 @@
 <template>
   <q-page class="dashboard-page theme-bg-secondary">
+    
     <!-- Page Header -->
-    <div class="page-header theme-bg-card theme-border-light q-pa-md">
-      <div class="row items-center justify-between">
-        <div>
-          <h1 class="page-title theme-text-primary theme-font-xxl">Dashboard</h1>
-          <p class="page-subtitle theme-text-secondary theme-font-md">Ringkasan aktivitas bisnis Anda hari ini</p>
-        </div>
-        <div class="header-actions">
-          <q-btn
-            color="primary"
-            icon="refresh"
-            label="Refresh"
-            class="theme-radius-lg theme-font-sm"
-            @click="refreshData"
-            :loading="loading"
-          />
-        </div>
+    <div class="page-header theme-bg-card theme-border-light theme-radius-lg theme-shadow-light">
+      <div class="page-title">
+        <h4 class="q-ma-none theme-text-primary theme-font-xl">Dashboard</h4>
+        <p class="text-caption q-ma-none theme-text-secondary theme-font-xs">Ringkasan aktivitas bisnis Anda hari ini</p>
       </div>
+      <q-btn
+        color="primary"
+        icon="refresh"
+        label="Refresh"
+        @click="refreshData"
+        class="theme-radius-lg theme-font-sm"
+      />
     </div>
 
     <!-- Stats Cards -->
@@ -474,20 +470,6 @@ onMounted(async () => {
   border: var(--theme-border-light);
   border-radius: var(--theme-radius-lg);
   box-shadow: var(--theme-shadow-medium);
-  transition: var(--theme-transition-all);
-}
-
-.page-title {
-  font-size: var(--theme-font-xxl);
-  font-weight: 600;
-  color: var(--theme-text-primary);
-  margin: 0;
-  transition: var(--theme-transition-all);
-}
-
-.page-subtitle {
-  color: var(--theme-text-secondary);
-  margin: var(--theme-spacing-xs) 0 0 0;
   transition: var(--theme-transition-all);
 }
 

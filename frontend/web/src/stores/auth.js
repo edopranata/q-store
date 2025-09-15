@@ -109,15 +109,9 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.error('Logout error:', error)
       } finally {
-        // Clear state and localStorage
-        this.user = null
-        this.token = null
-        this.permissions = []
-        this.isAuthenticated = false
         
-        LocalStorage.remove('auth_token')
-        LocalStorage.remove('auth_user')
-        LocalStorage.remove('auth_permissions')
+        // Clear state and localStorage
+        this.clearUser()
         
         // Remove authorization header
         delete api.defaults.headers.common['Authorization']
@@ -149,6 +143,22 @@ export const useAuthStore = defineStore('auth', {
         // Set authorization header
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       }
+    },
+
+    /**
+     * Clear user data
+     */
+    clearUser() {
+      // Clear state
+      this.user = null
+      this.token = null
+      this.permissions = []
+      this.isAuthenticated = false
+
+      // Clear localStorage
+      LocalStorage.remove('auth_token')
+      LocalStorage.remove('auth_user')
+      LocalStorage.remove('auth_permissions')
     },
 
     /**
