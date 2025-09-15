@@ -55,9 +55,9 @@ export default defineBoot(({ app, router, stores }) => {
             message: data?.message || 'Sesi Anda telah berakhir. Silakan login kembali.',
             position: 'top'
           })
-          
+          console.log(router.currentRoute.value.fullPath)
           // Use router.push instead of window.location.href for better navigation
-          if (router && router.currentRoute.value.name !== 'login') {
+          if (router.currentRoute.value.fullPath.startsWith('/app')) {
             setTimeout(() => {
               router.push({
                 name: 'login',
