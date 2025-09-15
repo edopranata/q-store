@@ -53,7 +53,7 @@
         :rows="units"
         :columns="columns"
         :loading="unitsStore.table.loading"
-        v-model:pagination="pagination"
+        v-model:pagination="table.pagination"
         @request="onRequest"
         row-key="id"
         server-side-pagination
@@ -159,6 +159,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useUnitsStore } from 'src/stores/units'
 
+const {table} = useUnitsStore()
 const $q = useQuasar()
 const unitsStore = useUnitsStore()
 

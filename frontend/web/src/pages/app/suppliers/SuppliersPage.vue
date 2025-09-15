@@ -53,7 +53,7 @@
         :rows="suppliers"
         :columns="columns"
         :loading="loading"
-        v-model:pagination="pagination"
+        v-model:pagination="table.pagination"
         @request="onRequest"
         row-key="id"
         binary-state-sort
@@ -216,6 +216,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useSuppliersStore } from 'src/stores/suppliers'
 
+const {table} = useSuppliersStore()
 const $q = useQuasar()
 const suppliersStore = useSuppliersStore()
 

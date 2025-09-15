@@ -65,7 +65,7 @@
         :rows="users"
         :columns="columns"
         :loading="usersStore.table.loading"
-        v-model:pagination="pagination"
+        v-model:pagination="table.pagination"
         @request="onRequest"
         row-key="id"
         server-side-pagination
@@ -76,6 +76,12 @@
             <q-avatar size="40px" color="primary" text-color="white">
               {{ getInitials(props.row.name) }}
             </q-avatar>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-description="props">
+          <q-td :props="props">
+            <div class="q-mb-xs">{{ props.row.description }}</div>
           </q-td>
         </template>
 
@@ -251,6 +257,7 @@ import { useI18n } from 'vue-i18n'
 import { useUsersStore } from 'src/stores/users'
 import { useRolesStore } from 'src/stores/roles'
 
+const {table} = useUsersStore()
 const $q = useQuasar()
 const { t } = useI18n()
 const usersStore = useUsersStore()

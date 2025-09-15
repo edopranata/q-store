@@ -55,7 +55,7 @@ export const useCustomersStore = defineStore('customers', {
 
   actions: {
     async fetchCustomers(props = {}) {
-      this.isLoading = true
+      this.loading = true
       try {
         // Initialize pagination if not exists
         if (!this.table.pagination) {
@@ -110,7 +110,7 @@ export const useCustomersStore = defineStore('customers', {
         })
         return false
       } finally {
-        this.isLoading = false
+        this.loading = false
       }
     },
 

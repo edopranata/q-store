@@ -54,7 +54,7 @@
           :rows="customers"
           :columns="columns"
           :loading="customersStore.getIsLoading"
-          v-model:pagination="pagination"
+          v-model:pagination="table.pagination"
           @request="onRequest"
           row-key="id"
           class="customers-table"
@@ -214,6 +214,7 @@ import { useQuasar } from 'quasar'
 import { useCustomersStore } from 'src/stores/customers'
 
 const $q = useQuasar()
+const {table} = useCustomersStore()
 
 // Store
 const customersStore = useCustomersStore()

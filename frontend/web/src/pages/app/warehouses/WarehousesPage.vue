@@ -55,7 +55,7 @@
           :rows="warehouses"
           :columns="columns"
           :loading="warehousesStore.isLoading"
-          v-model:pagination="pagination"
+          v-model:pagination="table.pagination"
           @request="onRequest"
           row-key="id"
           server-side-pagination
@@ -224,6 +224,7 @@ import { useQuasar } from 'quasar'
 import { useWarehousesStore } from 'src/stores/warehouses'
 
 const $q = useQuasar()
+const {table} = useWarehousesStore()
 
 // Store
 const warehousesStore = useWarehousesStore()

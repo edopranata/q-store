@@ -53,8 +53,8 @@
       <q-table
         :rows="categories"
         :columns="columns"
-        :loading="categoriesStore.table.loading"
-        v-model:pagination="pagination"
+        :loading="categoriesStore.loading"
+        v-model:pagination="table.pagination"
         @request="onRequest"
         row-key="id"
         server-side-pagination
@@ -153,6 +153,8 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useCategoriesStore } from 'src/stores/categories'
+
+const {table} = useCategoriesStore()
 
 const $q = useQuasar()
 const categoriesStore = useCategoriesStore()
